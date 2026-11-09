@@ -108,6 +108,8 @@ add_executable(tests
     video_core/ampere_tennis_tessellation.cpp
     video_core/pipeline_cache_files.cpp
     video_core/pipeline_cache_policy.cpp
+    video_core/graphics_pipeline_library_policy.cpp
+    video_core/graphics_pipeline_library_cache.cpp
     video_core/shader_precache.cpp
     video_core/shader_object_pool.cpp
     video_core/storage_binding_capacity.cpp

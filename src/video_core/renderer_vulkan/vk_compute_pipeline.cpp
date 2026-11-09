@@ -32,6 +32,7 @@
 #include "video_core/vulkan_common/vulkan_wrapper.h"
 #include "video_core/gpu_logging/gpu_logging.h"
 #include "common/logging.h"
+#include "common/scope_exit.h"
 #include "common/settings.h"
 #include "shader_recompiler/exception.h"
 
@@ -330,24 +331,26 @@ ComputePipeline::ComputePipeline(const Device& device_, Scheduler& scheduler, vk
     }
 
     auto func{[this, shader_notify, pipeline_statistics] {
-        if (emit_module) {
-            try {
-                spv_module = emit_module();
-            } catch (const std::exception& exception) {
-                LOG_ERROR(Render_Vulkan, "Compute pipeline {:016x}: {}", shader_hash,
-                          exception.what());
-                build_failed = true;
-                std::scoped_lock lock{build_mutex};
-                is_built = true;
-                build_condvar.notify_one();
-                if (shader_notify) {
-                    shader_notify->MarkShaderComplete();
-                }
-                return;
-            }
+        SCOPE_EXIT {
+            // Release deferred translation before publishing completion, including failures.
             emit_module = nullptr;
-        }
+            if (!optimized_build) {
+                spv_module.reset();
+            }
+            {
+                std::scoped_lock lock{build_mutex};
+                is_built.store(true, std::memory_order_release);
+            }
+            build_condvar.notify_all();
+            if (shader_notify) {
+                shader_notify->MarkShaderComplete();
+            }
+        };
         try {
+            if (emit_module) {
+                spv_module = emit_module();
+                emit_module = nullptr;
+            }
             if (FastFirstBuildEnabled() && build_workers) {
                 // Dispatch with the unoptimized pipeline as soon as the driver returns it; the
                 // optimized one follows on a worker and takes its place at a later dispatch
@@ -385,39 +388,24 @@ ComputePipeline::ComputePipeline(const Device& device_, Scheduler& scheduler, vk
                              shader_hash, build_ms);
                 }
             }
-        } catch (const vk::Exception& exception) {
-            build_failed = true;
-            LOG_CRITICAL(Render_Vulkan, "Adreno rejected compute shader {:016X}: {}", shader_hash,
-                         exception.what());
-            std::scoped_lock lock{build_mutex};
-            is_built = true;
-            build_condvar.notify_one();
-            if (shader_notify) {
-                shader_notify->MarkShaderComplete();
+            // Log compute pipeline creation
+            if (GPU::Logging::IsActive()) {
+                GPU::Logging::GPULogger::GetInstance().LogPipelineStateChange(
+                    "ComputePipeline created"
+                );
             }
-            return;
-        }
 
-        // Log compute pipeline creation
-        if (GPU::Logging::IsActive()) {
-            GPU::Logging::GPULogger::GetInstance().LogPipelineStateChange(
-                "ComputePipeline created"
-            );
-        }
-
-        if (pipeline_statistics) {
-            pipeline_statistics->Collect(device, *pipeline);
-        }
-        // Nothing reads the module once the pipeline exists; the driver keeps its SPIR-V while it
-        // lives. A pending optimized build still needs it and resets it itself.
-        if (!optimized_build) {
-            spv_module.reset();
-        }
-        std::scoped_lock lock{build_mutex};
-        is_built = true;
-        build_condvar.notify_one();
-        if (shader_notify) {
-            shader_notify->MarkShaderComplete();
+            if (pipeline_statistics) {
+                pipeline_statistics->Collect(device, *pipeline);
+            }
+        } catch (const std::exception& exception) {
+            build_failed.store(true, std::memory_order_relaxed);
+            LOG_ERROR(Render_Vulkan, "Compute pipeline {:016x} build failed: {}", shader_hash,
+                      exception.what());
+        } catch (...) {
+            build_failed.store(true, std::memory_order_relaxed);
+            LOG_ERROR(Render_Vulkan, "Compute pipeline {:016x} build failed with unknown exception",
+                      shader_hash);
         }
     }};
     build_task = std::move(func);

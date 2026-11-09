@@ -108,6 +108,25 @@ TEST_CASE("Pipeline worker exceptions release captures and notify every draw wai
     }
 }
 
+TEST_CASE("Optional pipeline destruction drops an unstarted optimized link",
+          "[video_core][gpl][pipeline_build]") {
+    Common::ThreadWorker workers{1, "OptionalLinkTest"};
+    std::promise<void> entered, release;
+    auto gate = release.get_future().share();
+    workers.QueueWork([&entered, gate] {
+        entered.set_value();
+        gate.wait();
+    });
+    entered.get_future().wait();
+    std::atomic_int calls{};
+    {
+        PipelineBuild optional{&workers, [&calls] { ++calls; }, true};
+    }
+    release.set_value();
+    workers.WaitForRequests();
+    CHECK(calls == 0);
+}
+
 TEST_CASE("Eviction after an inline build leaves a safe queued callback",
           "[video_core][async_draw][pipeline_build]") {
     Common::ThreadWorker workers{1, "PipelineTest"};

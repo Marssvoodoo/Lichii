@@ -527,7 +527,7 @@ vk::ShaderModule EmitShaderModule(const Device& device, const Shader::Profile& p
         *spirv_hash = Common::CityHash128(reinterpret_cast<const char*>(module_code.data()),
                                           module_code.size() * sizeof(u32));
     }
-    device.SaveShader(code);
+    device.SaveShader(module_code);
     vk::ShaderModule module{BuildShader(device, module_code)};
 
     // Text log + .spv dump. Text log is gated by gpu_log_level != Off; .spv dump
@@ -541,12 +541,12 @@ vk::ShaderModule EmitShaderModule(const Device& device, const Shader::Profile& p
             fmt::format("shader_{:016x}_{}", shader_hash, stage_names[stage_index]);
         if (should_log) {
             const std::string shader_info = fmt::format(
-                "SPIR-V size: {} bytes, hash: {:016x}", code.size() * sizeof(u32), shader_hash);
+                "SPIR-V size: {} bytes, hash: {:016x}", module_code.size() * sizeof(u32), shader_hash);
             GPU::Logging::GPULogger::GetInstance().LogShaderCompilation(shader_name, shader_info);
         }
         if (should_dump) {
             GPU::Logging::DumpSpirvShader(shader_hash,
-                                         std::span<const u32>(code.data(), code.size()));
+                                         std::span<const u32>(module_code.data(), module_code.size()));
         }
     }
 
@@ -966,12 +966,16 @@ PipelineCache::~PipelineCache() {
     workers.WaitForRequests();
     serialization_thread.WaitForRequests();
     SaveUsedPipelines();
+    // Pipeline destruction joins optional optimized links on their separate pool. Finish
+    // those driver calls before taking the final cache snapshot or releasing the cache.
+    graphics_cache.clear();
+    evicted_pipelines.clear();
+    compute_cache.clear();
+    retired_compute_pipelines.clear();
     if (use_vulkan_pipeline_cache && !vulkan_pipeline_cache_filename.empty()) {
         SerializeVulkanPipelineCache(vulkan_pipeline_cache_filename, vulkan_pipeline_cache,
                                      CACHE_VERSION);
     }
-    graphics_cache.clear();
-    evicted_pipelines.clear();
 }
 
 void PipelineCache::SaveUsedPipelines() {
@@ -1564,6 +1568,7 @@ size_t PrecacheThreads() {
 }
 
 bool ComputeNoInline();
+std::vector<u32> ComputeModuleCode(std::span<const u32> code, u64 shader_hash);
 
 /// Whether shared shader functions are built as calls (compute bit 0, graphics bit 1), for the
 /// precache markers: the SPIR-V the driver compiled differs between the two modes.
@@ -1981,9 +1986,9 @@ void PipelineCache::PreparePrecompiled(const std::filesystem::path& base_dir,
         base_dir / fmt::format("precompiled_prepared.fork-v{}.txt", CACHE_VERSION);
     const auto infos_path =
         base_dir / fmt::format("precompiled_infos.fork-v{}.bin", CACHE_VERSION);
-    const std::string stamp = fmt::format("{} {} {:#x} {} {}\n", file_size, modified,
+    const std::string stamp = fmt::format("{} {} {:#x} {} {} {}\n", file_size, modified,
                                           device.GetDriverVersion(), Common::g_scm_rev,
-                                          device.GetModelName());
+                                          device.GetModelName(), NoInlineBits());
     const char* force = std::getenv("EDEN_NX2_PRECOMPILED_FORCE");
     if (!(force && force[0] == '1')) {
         std::ifstream stamp_file(stamp_path, std::ios::binary);
@@ -2738,7 +2743,7 @@ void PipelineCache::AuditPrecompiled(std::span<Shader::Environment* const> envs,
                                            envs[0]->StartAddress()};
             auto program{TranslateProgram(main_pools.inst, main_pools.block, *envs[0], cfg,
                                           host_info)};
-            live_code[0] = EmitSPIRV(profile, program);
+            live_code[0] = ComputeModuleCode(EmitSPIRV(profile, program), key_hash);
             Shader::SerializeInfo(program.info, live_info[0]);
             present[0] = true;
         } else {
@@ -2756,6 +2761,9 @@ void PipelineCache::AuditPrecompiled(std::span<Shader::Environment* const> envs,
                     EmitPipelineShader(profile, *stages.runtime_infos[stage],
                                        stages.programs[stage + 1], binding,
                                        graphics_key.unique_hashes[stage + 1], {});
+                if (GraphicsNoInline()) {
+                    VideoCommon::MarkSharedFunctionsDontInline(live_code[stage]);
+                }
                 Shader::SerializeInfo(stages.programs[stage + 1].info, live_info[stage]);
                 present[stage] = true;
             }
@@ -4117,11 +4125,12 @@ ComputePipelineCacheEntry PipelineCache::CreateComputePipeline(
         program.shared_memory_size = max_shared_memory;
     }
     std::vector<u32> code{EmitSPIRV(profile, program)};
+    code = ComputeModuleCode(code, key.unique_hash);
     if (spirv_out) {
         *spirv_out = code;
     }
     device.SaveShader(code);
-    vk::ShaderModule spv_module{BuildShader(device, ComputeModuleCode(code, key.unique_hash))};
+    vk::ShaderModule spv_module{BuildShader(device, code)};
 
     // Text log + .spv dump. Same split as the graphics path.
     const bool should_log = GPU::Logging::IsActive();
