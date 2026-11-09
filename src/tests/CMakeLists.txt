@@ -192,6 +192,11 @@ create_target_directory_groups(tests)
 target_link_libraries(tests PRIVATE common core audio_core input_common video_core frontend_common)
 target_link_libraries(tests PRIVATE ${PLATFORM_LIBRARIES} Catch2::Catch2WithMain Threads::Threads)
 
+if (TARGET streamline_headers)
+    target_sources(tests PRIVATE video_core/streamline_result.cpp)
+    target_link_libraries(tests PRIVATE streamline_headers)
+endif()
+
 if (TARGET dynarmic::dynarmic)
     target_sources(tests PRIVATE core/window_trace.cpp)
     target_link_libraries(tests PRIVATE dynarmic::dynarmic)

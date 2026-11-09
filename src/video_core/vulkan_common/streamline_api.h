@@ -33,4 +33,9 @@ struct Api {
 /// The loaded functions; only valid while IsDlssAvailable().
 [[nodiscard]] const Api& GetApi();
 
+// Streamline reports this warning after a successful evaluation when its VRAM budget is spent.
+[[nodiscard]] constexpr bool DlssEvaluationSucceeded(sl::Result result) {
+    return result == sl::Result::eOk || result == sl::Result::eWarnOutOfVRAM;
+}
+
 } // namespace Vulkan::Streamline

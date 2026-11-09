@@ -572,8 +572,9 @@ if (ENABLE_NVIDIA_DLSS)
         vulkan_common/streamline.h
         vulkan_common/streamline_api.h
     )
-    target_include_directories(video_core PRIVATE "${STREAMLINE_INCLUDE_DIR}")
-    target_link_libraries(video_core PRIVATE version wintrust crypt32)
+    add_library(streamline_headers INTERFACE)
+    target_include_directories(streamline_headers INTERFACE "${STREAMLINE_INCLUDE_DIR}")
+    target_link_libraries(video_core PRIVATE streamline_headers version wintrust crypt32)
     target_compile_definitions(video_core PUBLIC EGLANTINE_STREAMLINE)
     message(STATUS "NVIDIA DLSS through Streamline: ${STREAMLINE_INCLUDE_DIR}")
 endif()
