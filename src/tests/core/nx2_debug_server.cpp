@@ -137,6 +137,26 @@ TEST_CASE("Debug frame times measure intervals and retain the ring tail", "[core
     REQUIRE(pending["max_ms"] == 1.0);
 }
 
+TEST_CASE("Recent debug frame windows remain complete after the lifetime ring wraps",
+          "[core][nx2_debug_server][recent_frame_times]") {
+    auto& ring = Core::g_nx2_present_times_ns;
+    SCOPE_EXIT {
+        for (auto& timestamp : ring) {
+            timestamp.store(0);
+        }
+    };
+    for (u64 frame = 1; frame <= 5000; ++frame) {
+        ring[frame % ring.size()] = frame * 1'000'000;
+    }
+    const auto recent = Core::Nx2Debug::ReadFrameTimes(0, 5000, 4'900'000'000, 5'000'000'000, 60.0);
+    CHECK(recent["frames"] == 100);
+    CHECK(recent["truncated"] == false);
+    CHECK(Core::Nx2Debug::ReadFrameTimes(0, 5000, 1, 5'000'000'000, 60.0)["truncated"] == true);
+    const u64 oldest = 5000 - ring.size() + 1;
+    ring[oldest % ring.size()] = 6'000'000'000;
+    CHECK(Core::Nx2Debug::ReadFrameTimes(0, 5000, 4'900'000'000, 5'000'000'000, 60.0)["truncated"] == true);
+}
+
 TEST_CASE("Debug server requests map to handlers", "[core][nx2_debug_server]") {
     const Handlers handlers = EchoHandlers();
     REQUIRE(json::parse(Core::Nx2Debug::HandleRequest(

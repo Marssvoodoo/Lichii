@@ -211,14 +211,17 @@ json Status(ToolState& state, const json& params) {
 json FrameTimes(ToolState& state, const json& params) {
     const double seconds = params.value("seconds", 5.0);
     const double refresh_hz = params.value("refresh_hz", 60.0);
+    const double past = params.value("past_seconds", 0.0);
     // Up to 120 s: the present history holds 4096 frames, "truncated" says when it ran out.
     if (!std::isfinite(seconds) || seconds <= 0.0 || seconds > 120.0 ||
-        !std::isfinite(refresh_hz) || refresh_hz <= 0.0) {
-        throw std::runtime_error{"seconds must be > 0 and <= 120; refresh_hz must be > 0"};
+        !std::isfinite(refresh_hz) || refresh_hz <= 0.0 || !std::isfinite(past) || past < 0.0 ||
+        past > 120.0) {
+        throw std::runtime_error{
+            "seconds must be > 0 and <= 120; refresh_hz must be > 0; past_seconds must be >= 0 and <= 120"};
     }
     // past_seconds: the frames already presented in that many seconds before now, from the
     // present history, without waiting (a run's frames read after it, other calls not held up).
-    if (const double past = params.value("past_seconds", 0.0); past > 0.0) {
+    if (past > 0.0) {
         const u64 after = g_nx2_present_count.load(std::memory_order_relaxed);
         const auto now = std::chrono::steady_clock::now();
         const auto since = now - std::chrono::duration_cast<std::chrono::steady_clock::duration>(
@@ -249,7 +252,13 @@ json FrameTimes(ToolState& state, const json& params) {
 
 json ReadFrameTimes(u64 before, u64 after, u64 begin_ns, u64 end_ns, double refresh_hz) {
     const u64 capacity = g_nx2_present_times_ns.size();
-    bool truncated = after < before || after - before > capacity;
+    bool truncated = after < before;
+    if (after >= before && after - before > capacity) {
+        // Historical requests start at frame zero even when their time window is still retained.
+        const u64 oldest = g_nx2_present_times_ns[(after - capacity + 1) % capacity].load(
+            std::memory_order_relaxed);
+        truncated = oldest == 0 || oldest > begin_ns;
+    }
     const u64 first = (std::max)(before + 1, after > capacity ? after - capacity + 1 : u64{1});
     std::vector<double> intervals;
     u64 previous = 0;
