@@ -27,3 +27,12 @@ Checked current Lichii nx2 cbb512ee7a9d and Eglantine nx2 78743f30c251. The inst
 DLSS: official public [Streamline 2.14.16](https://github.com/NVIDIA-RTX/Streamline/releases/tag/v2.14.16) / NGX 310.9.16 package verified against its release SHA256 and NVIDIA signatures. The integration requests DLSS Super Resolution; this is not a DLSS 5 neural-rendering integration. Actual runtime evaluation and screenshots, not the Ready label, determine whether DLSS is functioning.
 
 Eglantine worker patch: published in the owner's [fork branch](https://github.com/Marssvoodoo/Eglantine/tree/fix/eglantine-worker-cleanup). Focused test uses the production worker header, with OS thread naming/affinity stubbed: before fails the cleanup-order assertion, after passes, 50/50 repeats. A full Eglantine app was not built. Upstream submission awaits human-authored commit/PR text under its [AI policy](https://github.com/Eglantine-Community/Eglantine/blob/nx2/docs/policies/AI.md).
+
+## November 8 source audit
+
+The follow-up [source review and runtime evidence](REVIEW-2026-11-08.md) records six
+focused correctness fixes, two additional upstream PRs, full Windows tests and
+the remaining first-use driver-build stalls. The current native-test-passing
+combined branch is [tested/oot-source-review-20261108](https://github.com/Marssvoodoo/Lichii/tree/tested/oot-source-review-20261108).
+Its explicit driver-cache override is an experiment with the normal policy kept
+as the default; no stutter-free result is claimed.
