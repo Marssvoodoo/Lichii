@@ -1455,7 +1455,7 @@ void OpenGame(Game& out, const std::filesystem::path& game, const std::filesyste
     }
     std::filesystem::create_directories(spill);
     out.container = std::make_unique<FileSys::NupContainer>(
-        file, FileSys::NupDecompressCache::DefaultCap, spill);
+        file, FileSys::NupContainer::DefaultCacheCap, spill);
     if (out.container->GetStatus() != Loader::ResultStatus::Success) {
         throw std::runtime_error("cannot read the NUP");
     }

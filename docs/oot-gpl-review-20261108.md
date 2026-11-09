@@ -41,4 +41,6 @@ Review fixes: five-set capability limit; fragment scaling offset on delta draws;
 
 Added regression sources cover capability boundaries, concurrent library failures, no-retain retries, optional-link cancellation and malformed cache counts. They must pass on the candidate build.
 
+The first native build found a standalone utility caller of the cache limit that upstream moved from NupDecompressCache to NupContainer. The utility now uses the public DefaultCacheCap with the same 512 MiB value. Reviews 29 and 30 were reopened and rechecked before the retry.
+
 Runtime acceptance requires Wait mode with heavy/draw skipping disabled, observed correct rendering and measured forward travel. Shader warm-up uses guessed single-stage state; unseen state/partner variants can still compile at runtime. Runtime shared library retention grows with encountered unique shaders and needs memory observation. Cutscenes and full-game traversal are not verified by source review.
