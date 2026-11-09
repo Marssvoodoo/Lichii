@@ -580,6 +580,12 @@ bool DriverCachesPipelines(const Device& device) {
         return false;
     }
 }
+
+// A per-launch comparison for drivers that normally use their own disk cache.
+bool ForceExplicitDriverCache() {
+    const char* const value = std::getenv("EDEN_NX2_FORCE_DRIVER_CACHE");
+    return value != nullptr && std::string_view{value} == "1";
+}
 } // Anonymous namespace
 
 PipelineCache::PipelineCache(Tegra::MaxwellDeviceMemoryManager& device_memory_,
@@ -595,7 +601,7 @@ PipelineCache::PipelineCache(Tegra::MaxwellDeviceMemoryManager& device_memory_,
       buffer_cache{buffer_cache_}, texture_cache{texture_cache_}, shader_notify{shader_notify_},
       use_asynchronous_shaders{Settings::values.use_asynchronous_shaders.GetValue()},
       use_vulkan_pipeline_cache{Settings::values.use_vulkan_driver_pipeline_cache.GetValue() &&
-                                !DriverCachesPipelines(device_)},
+                                (!DriverCachesPipelines(device_) || ForceExplicitDriverCache())},
       num_pipeline_workers{device.HasBrokenParallelShaderCompiling() ? 1ULL
                                                                      : GetTotalPipelineWorkers()},
       emission_budget{num_pipeline_workers},
@@ -1168,6 +1174,8 @@ void PipelineCache::LoadDiskResources(u64 title_id, std::stop_token stop_loading
         }
         vulkan_pipeline_cache =
             LoadVulkanPipelineCache(vulkan_pipeline_cache_filename, CACHE_VERSION);
+        LOG_INFO(Render_Vulkan, "Explicit Vulkan driver pipeline cache enabled: {}",
+                 Common::FS::PathToUTF8String(vulkan_pipeline_cache_filename));
     }
 
     struct {
