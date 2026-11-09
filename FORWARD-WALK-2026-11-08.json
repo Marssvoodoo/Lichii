@@ -1,0 +1,141 @@
+{
+  "source_commit": "485af70dd2fa527d06085be5a69d83a9eee8fb15",
+  "platform": "Windows / RTX5090 / NVIDIA621.14",
+  "scope": "Native guest-present timing in Ocarina Hyrule Field; different first-use keys/routes; not a controlled percentage performance claim.",
+  "wait_explicit_cache_on": {
+    "frames": 396,
+    "max_ms": 533.7744,
+    "over_250ms": 2,
+    "driver_build_ms": [
+      262.2,
+      514.8
+    ],
+    "both_slow_keys_in_prepared_infos": true
+  },
+  "bounded_8ms_explicit_cache_on": [
+    {
+      "label": "bounded-forward1",
+      "frames": 396,
+      "fps": 56.968677671538245,
+      "max_ms": 39.3388,
+      "p99_ms": 32.848290000000006,
+      "over_50ms": 0,
+      "over_100ms": 0,
+      "over_250ms": 0,
+      "driver_build_count": 5,
+      "driver_build_ms": [
+        5.8,
+        221.4,
+        218.3,
+        233.6,
+        66.7
+      ],
+      "complete_history": true,
+      "held_input_presents": 300
+    },
+    {
+      "label": "bounded-forward2",
+      "frames": 396,
+      "fps": 59.39020210140828,
+      "max_ms": 27.5529,
+      "p99_ms": 24.038070000000005,
+      "over_50ms": 0,
+      "over_100ms": 0,
+      "over_250ms": 0,
+      "driver_build_count": 1,
+      "driver_build_ms": [
+        0.1
+      ],
+      "complete_history": true,
+      "held_input_presents": 300
+    },
+    {
+      "label": "bounded-forward3",
+      "frames": 395,
+      "fps": 59.511023980275965,
+      "max_ms": 26.34,
+      "p99_ms": 24.803184,
+      "over_50ms": 0,
+      "over_100ms": 0,
+      "over_250ms": 0,
+      "driver_build_count": 3,
+      "driver_build_ms": [
+        0.1,
+        0.9,
+        1.4
+      ],
+      "complete_history": true,
+      "held_input_presents": 300
+    }
+  ],
+  "bounded_8ms_default_cache_policy": [
+    {
+      "label": "final-bounded-forward1",
+      "frames": 216,
+      "fps": 56.873168489789585,
+      "max_ms": 45.4733,
+      "p99_ms": 39.16238,
+      "over_50ms": 0,
+      "over_100ms": 0,
+      "over_250ms": 0,
+      "driver_build_count": 4,
+      "driver_build_ms": [
+        1.1,
+        0.8,
+        1.0,
+        0.9
+      ],
+      "complete_history": true,
+      "held_input_presents": 120
+    },
+    {
+      "label": "final-bounded-forward2",
+      "frames": 216,
+      "fps": 59.58045758784435,
+      "max_ms": 30.7685,
+      "p99_ms": 25.665905,
+      "over_50ms": 0,
+      "over_100ms": 0,
+      "over_250ms": 0,
+      "driver_build_count": 0,
+      "driver_build_ms": [],
+      "complete_history": true,
+      "held_input_presents": 120
+    },
+    {
+      "label": "final-bounded-forward3",
+      "frames": 396,
+      "fps": 58.71240058237366,
+      "max_ms": 29.1091,
+      "p99_ms": 26.866210000000002,
+      "over_50ms": 0,
+      "over_100ms": 0,
+      "over_250ms": 0,
+      "driver_build_count": 7,
+      "driver_build_ms": [
+        1.1,
+        238.4,
+        116.3,
+        126.8,
+        130.1,
+        129.8,
+        141.4
+      ],
+      "complete_history": true,
+      "held_input_presents": 300
+    }
+  ],
+  "accepted_bounded_segments": 6,
+  "accepted_bounded_intervals": 2015,
+  "bounded_max_ms": 45.4733,
+  "bounded_over_50ms": 0,
+  "prepared_cache_reused_on_final_boot_s": 6.813121,
+  "limits": [
+    "Not identical cold pipeline keys or camera routes; no percentage FPS speedup claim.",
+    "Draw skipping can omit effects, including persistent resources; ending screenshots do not prove every transient frame correct.",
+    "Cutscenes and full traversal not validated.",
+    "No new video: OBS websocket unavailable; no OBS state changed."
+  ],
+  "excluded_game_over_sample": "bounded-forward4; excluded completely; saved progress reloaded, subsequent final samples end at4hearts.",
+  "final_configuration": "OoT per-game Bounded8ms; global Wait unchanged; extra explicit cache override absent; default driver-cache policy verified."
+}
