@@ -1,5 +1,8 @@
 # Ocarina forward-walking shader tests - 2026-11-08
 
+The newer installed profile uses GPL and complete Wait-mode draws. See the
+[2026-11-09 pipeline-library validation](GPL-PERFORMANCE-2026-11-09.md).
+
 Walking into new ground reproduced long driver pipeline builds even after the
 prepared shader infos were reused. Enabling an extra explicit Vulkan pipeline
 cache did not eliminate the freezes. The existing per-game **Bounded wait** mode

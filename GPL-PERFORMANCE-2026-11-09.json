@@ -1,0 +1,329 @@
+{
+  "source_commit": "f0589f1ee5a7c160515937a096910fb7449cf696",
+  "draw_mode": "Wait",
+  "native_suites": 5,
+  "debug_adapter_tests": 16,
+  "later_gpl_cases": 6,
+  "later_gpl_assertions": 27,
+  "rows": [
+    {
+      "condition": "gpl-forward",
+      "samples": [
+        {
+          "label": "gpl-forward1",
+          "frames": 216,
+          "fps": 50.12857282699948,
+          "mean_ms": 19.948702777777775,
+          "max_ms": 97.1932,
+          "over_50ms": 1,
+          "over_100ms": 0,
+          "over_250ms": 0
+        },
+        {
+          "label": "gpl-forward2",
+          "frames": 215,
+          "fps": 59.39248504400538,
+          "mean_ms": 16.837146976744194,
+          "max_ms": 24.9236,
+          "over_50ms": 0,
+          "over_100ms": 0,
+          "over_250ms": 0
+        },
+        {
+          "label": "gpl-forward3",
+          "frames": 278,
+          "fps": 59.38971597851041,
+          "mean_ms": 16.83793201438849,
+          "max_ms": 27.4783,
+          "over_50ms": 0,
+          "over_100ms": 0,
+          "over_250ms": 0
+        },
+        {
+          "label": "gpl-forward4",
+          "frames": 397,
+          "fps": 56.18572413307619,
+          "mean_ms": 17.7981153652393,
+          "max_ms": 40.4416,
+          "over_50ms": 0,
+          "over_100ms": 0,
+          "over_250ms": 0
+        },
+        {
+          "label": "gpl-forward5",
+          "frames": 215,
+          "fps": 60.28913435010162,
+          "mean_ms": 16.58673674418605,
+          "max_ms": 26.0351,
+          "over_50ms": 0,
+          "over_100ms": 0,
+          "over_250ms": 0
+        }
+      ],
+      "frames": 1321,
+      "max_ms": 97.1932,
+      "over_50ms": 1,
+      "over_100ms": 0
+    },
+    {
+      "condition": "gpl-warm-forward",
+      "samples": [
+        {
+          "label": "gpl-warm-forward1",
+          "frames": 216,
+          "fps": 55.37606049321868,
+          "mean_ms": 18.058344907407406,
+          "max_ms": 43.1439,
+          "over_50ms": 0,
+          "over_100ms": 0,
+          "over_250ms": 0
+        },
+        {
+          "label": "gpl-warm-forward2",
+          "frames": 216,
+          "fps": 60.0003733356563,
+          "mean_ms": 16.666562962962967,
+          "max_ms": 23.3735,
+          "over_50ms": 0,
+          "over_100ms": 0,
+          "over_250ms": 0
+        },
+        {
+          "label": "gpl-warm-forward3",
+          "frames": 275,
+          "fps": 45.597194582031875,
+          "mean_ms": 21.931173818181833,
+          "max_ms": 100.0345,
+          "over_50ms": 1,
+          "over_100ms": 1,
+          "over_250ms": 0
+        }
+      ],
+      "frames": 707,
+      "max_ms": 100.0345,
+      "over_50ms": 1,
+      "over_100ms": 1
+    },
+    {
+      "condition": "gpl-cold-guest-forward",
+      "samples": [
+        {
+          "label": "gpl-cold-guest-forward1",
+          "frames": 217,
+          "fps": 53.33614384497459,
+          "mean_ms": 18.74901198156682,
+          "max_ms": 49.0503,
+          "over_50ms": 0,
+          "over_100ms": 0,
+          "over_250ms": 0
+        },
+        {
+          "label": "gpl-cold-guest-forward2",
+          "frames": 216,
+          "fps": 59.82857617212283,
+          "mean_ms": 16.71442083333333,
+          "max_ms": 34.631,
+          "over_50ms": 0,
+          "over_100ms": 0,
+          "over_250ms": 0
+        },
+        {
+          "label": "gpl-cold-guest-forward3",
+          "frames": 273,
+          "fps": 50.41191241245987,
+          "mean_ms": 19.83658131868131,
+          "max_ms": 76.7494,
+          "over_50ms": 2,
+          "over_100ms": 0,
+          "over_250ms": 0
+        }
+      ],
+      "frames": 706,
+      "max_ms": 76.7494,
+      "over_50ms": 2,
+      "over_100ms": 0
+    },
+    {
+      "condition": "gpl-installed-forward",
+      "samples": [
+        {
+          "label": "gpl-installed-forward1",
+          "frames": 217,
+          "fps": 54.555483429463266,
+          "mean_ms": 18.329963133640558,
+          "max_ms": 90.7442,
+          "over_50ms": 1,
+          "over_100ms": 0,
+          "over_250ms": 0
+        },
+        {
+          "label": "gpl-installed-forward2",
+          "frames": 216,
+          "fps": 52.61492909151774,
+          "mean_ms": 19.006012500000004,
+          "max_ms": 33.4683,
+          "over_50ms": 0,
+          "over_100ms": 0,
+          "over_250ms": 0
+        },
+        {
+          "label": "gpl-installed-forward3",
+          "frames": 278,
+          "fps": 59.92469965708201,
+          "mean_ms": 16.68760971223021,
+          "max_ms": 26.6392,
+          "over_50ms": 0,
+          "over_100ms": 0,
+          "over_250ms": 0
+        }
+      ],
+      "frames": 711,
+      "max_ms": 90.7442,
+      "over_50ms": 1,
+      "over_100ms": 0
+    },
+    {
+      "condition": "gpl-normal-forward",
+      "samples": [
+        {
+          "label": "gpl-normal-forward1",
+          "frames": 217,
+          "fps": 57.593356242749586,
+          "mean_ms": 17.36311382488479,
+          "max_ms": 38.8856,
+          "over_50ms": 0,
+          "over_100ms": 0,
+          "over_250ms": 0
+        },
+        {
+          "label": "gpl-normal-forward2",
+          "frames": 216,
+          "fps": 58.87449144091641,
+          "mean_ms": 16.985284722222215,
+          "max_ms": 31.8173,
+          "over_50ms": 0,
+          "over_100ms": 0,
+          "over_250ms": 0
+        },
+        {
+          "label": "gpl-normal-forward3",
+          "frames": 276,
+          "fps": 59.47426815620117,
+          "mean_ms": 16.813994202898545,
+          "max_ms": 27.4516,
+          "over_50ms": 0,
+          "over_100ms": 0,
+          "over_250ms": 0
+        }
+      ],
+      "frames": 709,
+      "max_ms": 38.8856,
+      "over_50ms": 0,
+      "over_100ms": 0
+    }
+  ],
+  "priority_abba": {
+    "kind": "Same scene, stationary A/B/B/A; warmed caches; no CPU contention added.",
+    "windows": [
+      {
+        "label": "A1-Normal",
+        "fps": 59.787732958843016,
+        "frames": 302,
+        "hitch_ms": 0.0,
+        "max_ms": 28.5809,
+        "mean_ms": 16.725839072847688,
+        "min_ms": 13.217,
+        "over_100ms": 0,
+        "over_250ms": 0,
+        "over_50ms": 0,
+        "p50_ms": 15.763300000000001,
+        "p90_ms": 20.78323000000003,
+        "p99_ms": 27.473961000000003,
+        "stutters": 0,
+        "truncated": false,
+        "vsync_buckets": {
+          "1": 0.9470198675496688,
+          "2": 0.052980132450331126,
+          "3": 0.0,
+          "4+": 0.0
+        }
+      },
+      {
+        "label": "B1-BelowNormal",
+        "fps": 59.84085898184542,
+        "frames": 302,
+        "hitch_ms": 0.0,
+        "max_ms": 29.7843,
+        "mean_ms": 16.71099006622517,
+        "min_ms": 13.5251,
+        "over_100ms": 0,
+        "over_250ms": 0,
+        "over_50ms": 0,
+        "p50_ms": 15.8081,
+        "p90_ms": 19.929070000000007,
+        "p99_ms": 26.439221000000003,
+        "stutters": 0,
+        "truncated": false,
+        "vsync_buckets": {
+          "1": 0.9470198675496688,
+          "2": 0.052980132450331126,
+          "3": 0.0,
+          "4+": 0.0
+        }
+      },
+      {
+        "label": "B2-BelowNormal",
+        "fps": 59.77937858053565,
+        "frames": 303,
+        "hitch_ms": 0.0,
+        "max_ms": 27.5363,
+        "mean_ms": 16.728176567656778,
+        "min_ms": 13.9167,
+        "over_100ms": 0,
+        "over_250ms": 0,
+        "over_50ms": 0,
+        "p50_ms": 15.7229,
+        "p90_ms": 21.03150000000002,
+        "p99_ms": 26.04058,
+        "stutters": 0,
+        "truncated": false,
+        "vsync_buckets": {
+          "1": 0.9504950495049505,
+          "2": 0.04950495049504951,
+          "3": 0.0,
+          "4+": 0.0
+        }
+      },
+      {
+        "label": "A2-Normal",
+        "fps": 60.02614415013927,
+        "frames": 304,
+        "hitch_ms": 0.0,
+        "max_ms": 28.8801,
+        "mean_ms": 16.65940756578948,
+        "min_ms": 12.9704,
+        "over_100ms": 0,
+        "over_250ms": 0,
+        "over_50ms": 0,
+        "p50_ms": 15.7662,
+        "p90_ms": 19.328149999999997,
+        "p99_ms": 27.45909899999999,
+        "stutters": 0,
+        "truncated": false,
+        "vsync_buckets": {
+          "1": 0.944078947368421,
+          "2": 0.05592105263157895,
+          "3": 0.0,
+          "4+": 0.0
+        }
+      }
+    ]
+  },
+  "limits": [
+    "Different routes/cache histories; not a causal FPS percentage",
+    "Warmed driver cache; no cold-driver comparison",
+    "Cutscenes and full traversal not validated",
+    "Rare >100ms frame remains; not stutter-free"
+  ],
+  "upstream_guards_draft_pr": "https://github.com/PantACRO4life/Lichii/pull/3"
+}
